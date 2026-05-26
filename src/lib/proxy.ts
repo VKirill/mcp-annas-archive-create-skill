@@ -1,5 +1,5 @@
 /**
- * Optional outbound proxy for Anna's Archive traffic.
+ * Optional outbound proxy for your subscription library traffic.
  *
  * Reads env in this priority order:
  *   1. ANNAS_HTTPS_PROXY  — scope-specific (this MCP only, leaves Gemini direct)

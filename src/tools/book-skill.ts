@@ -58,7 +58,7 @@ export const BookSkillInputSchema = z.object({
     .string()
     .min(2)
     .describe(
-      "One of: (1) absolute path to a local file (.epub/.fb2/.pdf/.txt) — Anna's Archive is NOT called; (2) Book MD5 (32 hex chars) — looks for $DATA_DIR/books/<md5>.* first, downloads from Anna's if missing; (3) search query (title, author, keywords) — finds best hit on Anna's.",
+      "One of: (1) absolute path to a local file (.epub/.fb2/.pdf/.txt) — your library is NOT called; (2) Book MD5 (32 hex chars) — looks for $DATA_DIR/books/<md5>.* first, downloads from your library if missing; (3) search query (title, author, keywords) — finds best hit in your library.",
     ),
   skill_path: z
     .string()
@@ -313,7 +313,7 @@ async function resolveAndDownload(
 
   // Search path
   const hits = await searchBooks(cfg, book, 10, preferFormat);
-  if (hits.length === 0) throw new Error(`no Anna's Archive results for: ${book}`);
+  if (hits.length === 0) throw new Error(`no results from your library for: ${book}`);
   const priority: Record<string, number> = { epub: 1, pdf: 2, fb2: 3, txt: 4 };
   hits.sort((a, b) => (priority[a.format] ?? 9) - (priority[b.format] ?? 9));
   const candidateHits = hits.slice(0, 3);

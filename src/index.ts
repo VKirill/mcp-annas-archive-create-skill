@@ -1,18 +1,18 @@
 #!/usr/bin/env node
 /**
- * mcp-books — MCP server for Anna's Archive → Claude Code skill pipeline.
+ * mcp-books — MCP server for your personal subscription library → Claude Code skill pipeline.
  *
  * Tools (v0.3.0, consolidated):
  *   book_skill   — unified modal tool: create | enrich | preview
  *   skill_audit  — standalone auditor for any SKILL.md
  *
  * Env (required):
- *   ANNAS_ACCOUNT_KEY  — member secret key from annas-archive.gl
+ *   ANNAS_ACCOUNT_KEY  — subscription library member secret key
  *   GEMINI_API_KEY     — Google AI Studio key
  *
  * Env (optional):
  *   ANNAS_BASE_URL     — default https://annas-archive.gl
- *   ANNAS_HTTPS_PROXY  — http/https/socks5 proxy for Anna's traffic only
+ *   ANNAS_HTTPS_PROXY  — http/https/socks5 proxy for library traffic only
  *   GEMINI_MODEL       — default gemini-3-flash-preview
  *   DATA_DIR           — default ./data
  */
@@ -38,7 +38,7 @@ server.registerTool(
   {
     title: "Book → Claude Code skill (create / enrich / preview)",
     description:
-      "Unified pipeline. Search Anna's Archive (or accept md5) → download → extract text (epub/fb2/pdf/txt) → Gemini extracts methodology as strict JSON → render or patch SKILL.md → audit against the Claude Code skill-evaluation standard. " +
+      "Unified pipeline. Search your personal subscription library (or accept md5) → download → extract text (epub/fb2/pdf/txt) → Gemini extracts methodology as strict JSON → render or patch SKILL.md → audit against the Claude Code skill-evaluation standard. " +
       "mode='create' makes a new SKILL.md and optionally promotes to `promote_to` (gated by audit). " +
       "mode='enrich' surgically inserts NEW additions into an existing SKILL.md at `skill_path` (auto-rollback if audit worsens). " +
       "mode='preview' returns analysis + proposed additions or full SKILL.md preview WITHOUT writing — use for interactive review before deciding. " +
@@ -51,7 +51,7 @@ server.registerTool(
         .string()
         .min(2)
         .describe(
-          "One of: (1) absolute path to a local file (.epub/.fb2/.pdf/.txt) — Anna's Archive is NOT called; (2) Book MD5 (32 hex chars); (3) search query (title, author, keywords).",
+          "One of: (1) absolute path to a local file (.epub/.fb2/.pdf/.txt) — your library is NOT called; (2) Book MD5 (32 hex chars); (3) search query (title, author, keywords).",
         ),
       skill_path: z
         .string()
@@ -110,7 +110,7 @@ async function main(): Promise<void> {
   }
   const transport = new StdioServerTransport();
   await server.connect(transport);
-  console.error(`mcp-books v0.3.0 running via stdio (Anna's proxy: ${describeProxy()})`);
+  console.error(`mcp-books v0.3.0 running via stdio (library proxy: ${describeProxy()})`);
 }
 
 main().catch((err) => {

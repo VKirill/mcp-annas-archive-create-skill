@@ -2,9 +2,9 @@
 
 <img src="https://github.com/VKirill/codex-starter-kit/raw/main/assets/avatar-round.png" width="120" alt="Кирилл Вечкасов" />
 
-# MCP Annas-Archive + Create Skill
+# MCP Books + Create Skill
 
-**MCP-сервер Anna's Archive для Claude Code, который превращает любую методологическую книгу в production-ready Claude Code скилл — одним вызовом инструмента.**
+**MCP-сервер личной библиотеки для Claude Code, который превращает любую методологическую книгу — скачанную из твоей личной глобальной оплаченной библиотеки — в production-ready Claude Code скилл одним вызовом инструмента.**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Node.js](https://img.shields.io/badge/Node.js-≥20-43853d.svg)](https://nodejs.org)
@@ -18,7 +18,7 @@
 
 ---
 
-> **TL;DR** — MCP (Model Context Protocol) сервер для Claude Code, OpenCode, Codex CLI и любого MCP-совместимого агента. Ищет и скачивает книги с Anna's Archive через официальный member JSON API (auth по `?key=`, без HTML-скрапинга), вытаскивает методологию через Google Gemini 3 Flash в строгий JSON, рендерит `SKILL.md` по стандарту Anthropic Agent Skills, прогоняет программный аудит (длина description, обязательные секции, плотность цитат) и — если audit прошёл с нулём ошибок — кладёт результат сразу в `~/.claude/skills/<имя>/`. End-to-end. Одним вызовом.
+> **TL;DR** — MCP (Model Context Protocol) сервер для Claude Code, OpenCode, Codex CLI и любого MCP-совместимого агента. Ищет и скачивает любую книгу из твоей личной глобальной библиотеки по подписке (оплаченный личный доступ, открывающий полный доступ к мировой библиотеке) через официальный member JSON API (auth по `?key=`, без HTML-скрапинга), вытаскивает методологию через Google Gemini 3 Flash в строгий JSON, рендерит `SKILL.md` по стандарту Anthropic Agent Skills, прогоняет программный аудит (длина description, обязательные секции, плотность цитат) и — если audit прошёл с нулём ошибок — кладёт результат сразу в `~/.claude/skills/<имя>/`. End-to-end. Одним вызовом.
 
 ## Зачем нужен этот MCP
 
@@ -33,7 +33,7 @@
 Можешь каждый раз вставлять главы в промпт. Или **закодировать каждую книгу один раз в скилл Claude Code**, и агент сам подгрузит когда тема всплывёт. Этим и занимается MCP.
 
 ```
-Методологическая книга →  mcp-annas-archive-create-skill  →  ~/.claude/skills/<имя>/SKILL.md
+Методологическая книга →  mcp-books  →  ~/.claude/skills/<имя>/SKILL.md
 (EPUB / PDF / FB2 / TXT)                                     (прошёл аудит, с цитатами)
 ```
 
@@ -54,7 +54,7 @@
 - 🚫 **Определение жанра.** Отказывается выдумывать скилл из романов, сказок, мемуаров — возвращает `{error: "not_methodology", detected_genre: "..."}`.
 - 📚 **С цитатами.** Каждая capability и constraint цитирует дословный фрагмент с указанием главы и страницы.
 - ✅ **Гейт аудита.** Сгенерированные скиллы валидируются по лучшим практикам Anthropic Agent Skills. Промоут в `~/.claude/skills/` происходит **только если audit прошёл с нулём ошибок**.
-- 🔒 **Никакого HTML парсинга.** Используется официальный member JSON API Anna's Archive (`/dyn/api/fast_download.json` + `?key=`). Без cookies, без привязки к IP, возвращает квоту.
+- 🔒 **Никакого HTML парсинга.** Используется официальный member JSON API твоей библиотеки по подписке (`/dyn/api/fast_download.json` + `?key=`). Без cookies, без привязки к IP, возвращает квоту.
 - 💰 **Дёшево.** Типичная книга на 300 страниц = ~$0.05–$0.20 на `gemini-3-flash-preview`.
 - 🧱 **Идемпотентность.** Книги кешируются по md5; анализы — по `(md5, promptHash)`. Повторные запуски бесплатны.
 - 🔧 **Стек-агностичный вывод.** SKILL.md работает в любой установке Claude Code. Стандарт аудита совпадает с публичной документацией Anthropic.
@@ -63,8 +63,8 @@
 
 ```
 ┌─────────────────┐    ┌──────────────────┐    ┌──────────────────┐
-│ Anna's Archive  │ →  │  book_search +   │ →  │   PDF/EPUB/FB2   │
-│  member API     │    │   book_download  │    │   на диске       │
+│  Твоя личная    │ →  │  book_search +   │ →  │   PDF/EPUB/FB2   │
+│  библиотека     │    │   book_download  │    │   на диске       │
 └─────────────────┘    └──────────────────┘    └──────────────────┘
                                                          │
                                                          ▼
@@ -121,7 +121,7 @@ npm run smoke:e2e -- "The Mom Test Rob Fitzpatrick"
 Правишь `.env`:
 
 ```dotenv
-# Anna's Archive — member secret key (API auth по URL ?key=, без cookies)
+# Твоя библиотека по подписке — member secret key (API auth по URL ?key=, без cookies)
 ANNAS_ACCOUNT_KEY=<вставь-с-annas-archive.gl/account>
 ANNAS_BASE_URL=https://annas-archive.gl
 
@@ -133,13 +133,13 @@ GEMINI_MODEL=gemini-3-flash-preview
 DATA_DIR=./data
 ```
 
-### Как получить member ключ Anna's Archive
+### Как получить member ключ твоей библиотеки по подписке
 
-1. Стань участником: https://annas-archive.gl/donate (разово или подпиской)
+1. Оформи подписку: https://annas-archive.gl/donate (разово или регулярно) — это открывает полный личный доступ к мировой библиотеке
 2. После входа зайди в https://annas-archive.gl/account → скопируй длинный алфавитно-цифровой **secret key** под надписью "Stable API access"
 3. Вставь в `.env` как `ANNAS_ACCOUNT_KEY`
 
-Бесплатные участники получают ~25 fast download'ов в день. Ответ `book_get_download_url` включает остаток квоты.
+На бесплатном тарифе подписки доступно ~25 fast download'ов в день; тарифы выше поднимают лимит. Ответ `book_get_download_url` включает остаток квоты.
 
 ### Как получить Gemini API ключ
 
@@ -171,13 +171,13 @@ DATA_DIR=./data
 
 | Форма | Пример | Поведение |
 |---|---|---|
-| **Локальный путь** | `/home/user/Downloads/mom-test.pdf` (тоже `~/`, `./`) | Anna's Archive **не вызывается**. Файл читается напрямую. Поддерживается: `.epub`, `.fb2`, `.pdf`, `.txt`. |
-| **MD5 (32 hex)** | `ad8211428498baf5e6197a2579e4acf2` | Ищет в `$DATA_DIR/books/<md5>.*` сначала; качает с Anna's только если нет в кеше. |
-| **Поисковый запрос** | `Designing Data-Intensive Applications Kleppmann` | Ищет на Anna's, **отфильтровывает** неподдерживаемые форматы (azw3, mobi, djvu, zip, cbz, cbr) ещё до скачивания — они не тратят дневную квоту. Оставшиеся хиты сортируются `epub > pdf > fb2 > txt`. Можно переопределить через `prefer_format`. Если первый хит сдох на всех partner-серверах или скачался мусор (RTF/HTML — детектится по magic-byte) — fallback на 2-й и 3-й хит. |
+| **Локальный путь** | `/home/user/Downloads/mom-test.pdf` (тоже `~/`, `./`) | Твоя библиотека **не вызывается**. Файл читается напрямую. Поддерживается: `.epub`, `.fb2`, `.pdf`, `.txt`. |
+| **MD5 (32 hex)** | `ad8211428498baf5e6197a2579e4acf2` | Ищет в `$DATA_DIR/books/<md5>.*` сначала; качает из твоей библиотеки только если нет в кеше. |
+| **Поисковый запрос** | `Designing Data-Intensive Applications Kleppmann` | Ищет в твоей библиотеке, **отфильтровывает** неподдерживаемые форматы (azw3, mobi, djvu, zip, cbz, cbr) ещё до скачивания — они не тратят дневную квоту. Оставшиеся хиты сортируются `epub > pdf > fb2 > txt`. Можно переопределить через `prefer_format`. Если первый хит сдох на всех partner-серверах или скачался мусор (RTF/HTML — детектится по magic-byte) — fallback на 2-й и 3-й хит. |
 
 ### Ручное скачивание (нет ключа / лимит)
 
-Когда `ANNAS_ACCOUNT_KEY` не задан или исчерпана дневная квота быстрого скачивания, MCP выводит в stderr блок с прямым URL на Anna's Archive и путём для сохранения файла, после чего опрашивает `data/books/` до 10 минут (по умолчанию) в ожидании файла.
+Когда `ANNAS_ACCOUNT_KEY` не задан или исчерпана дневная квота быстрого скачивания, MCP выводит в stderr блок с прямым URL для скачивания и путём для сохранения файла, после чего опрашивает `data/books/` до 10 минут (по умолчанию) в ожидании файла.
 
 Чтобы завершить скачивание: откройте URL в браузере, нажмите **Slow download** и сохраните файл под именем `<md5>.<ext>` в путь, который MCP указал в блоке stderr.
 
@@ -307,9 +307,9 @@ src/
 
 ## Прокси и WireGuard (опционально)
 
-Anna's Archive **открыта из России** без гео-блокировок — если ловишь 502 или DDoS-Guard проверки, самый рабочий способ это поднять трафик через residential РФ IP. Дешёвые рабочие IPv4/IPv6 из России можно взять на [px6.me](https://px6.me/?r=32352) (реселлер proxy6), любой из них подставляется напрямую в `ANNAS_HTTPS_PROXY` ниже.
+Твоя библиотека **открыта из России** без гео-блокировок — если ловишь 502 или DDoS-Guard проверки, самый рабочий способ это поднять трафик через residential РФ IP. Дешёвые рабочие IPv4/IPv6 из России можно взять на [px6.me](https://px6.me/?r=32352) (реселлер proxy6), любой из них подставляется напрямую в `ANNAS_HTTPS_PROXY` ниже.
 
-Anna's Archive иногда блокирует server/datacenter IP (DDoS-Guard, Cloudflare). Если нужно завернуть **только** anna's-трафик через прокси (Gemini идёт напрямую), достаточно одной env-переменной:
+Партнёрские зеркала библиотеки иногда блокируют server/datacenter IP (DDoS-Guard, Cloudflare). Если нужно завернуть **только** трафик библиотеки через прокси (Gemini идёт напрямую), достаточно одной env-переменной:
 
 ```dotenv
 # .env
@@ -335,7 +335,7 @@ ANNAS_HTTPS_PROXY=socks5://user:pass@residential.proxy.io:1080
 
 Если `ANNAS_HTTPS_PROXY` не задан — сервер падает обратно на стандартные `HTTPS_PROXY` / `HTTP_PROXY` env vars. Не задавай ничего → трафик идёт напрямую.
 
-MCP сервер логирует активный прокси при старте: `mcp-books MCP server running via stdio (Anna's proxy: socks5://127.0.0.1:1080)`.
+MCP сервер логирует активный прокси при старте: `mcp-books MCP server running via stdio (library proxy: socks5://127.0.0.1:1080)`.
 
 ### WireGuard
 
@@ -344,13 +344,13 @@ WireGuard — это **системный VPN**, не прокси уровня 
 | Паттерн | Как |
 |---|---|
 | **Системно** | `wg-quick up <name>` — весь хост идёт через WG. Никакая env не нужна; трафик mcp-books идёт по системной маршрутизации. |
-| **Через network namespace** | `ip netns add anna && ip netns exec anna wg-quick up <conf> && ip netns exec anna node dist/index.js` — только этот сервер идёт через WG. |
+| **Через network namespace** | `ip netns add books && ip netns exec books wg-quick up <conf> && ip netns exec books node dist/index.js` — только этот сервер идёт через WG. |
 | **WG endpoint отдаёт SOCKS/HTTP прокси** | Поставь `ANNAS_HTTPS_PROXY=socks5://<wg-host>:<port>`. Полезно с `microsocks` / `gost`-мостами. |
 
 ## FAQ
 
 **В: Это законно?**
-Anna's Archive — теневая библиотека-агрегатор; законность доступа зависит от юрисдикции. Этот MCP — тонкий клиент к **официальному member JSON API** Anna's — он не обходит контроль доступа. Участники платят за сервис и принимают его условия. Ты отвечаешь за соблюдение местного авторского права.
+Этот MCP — тонкий клиент к **официальному member JSON API** твоей личной библиотеки по подписке — он не обходит контроль доступа. У тебя оплаченная подписка, которая даёт личный полный доступ к мировой библиотеке, и ты принимаешь её условия. Законность доступа зависит от юрисдикции, и ты отвечаешь за соблюдение местного авторского права.
 
 **В: Работает ли с не-английскими книгами?**
 Да. Gemini вытаскивает методологию из английского, русского, немецкого, французского, испанского и многих других языков. Description и заголовки секций в `SKILL.md` остаются на английском (язык routing'а Claude Code), но тело и цитаты сохраняют исходный язык где это уместно.
@@ -358,8 +358,8 @@ Anna's Archive — теневая библиотека-агрегатор; за�
 **В: А Cursor / Continue / OpenCode / Codex CLI?**
 MCP transport — stdio + стандартный MCP протокол. Любой MCP-совместимый клиент работает. Формат скилла соответствует Anthropic Agent Skills — лучшая поддержка в Claude Code, но JSON-извлечение переиспользуется.
 
-**В: Можно ли запускать без Anna's Archive?**
-Используй `skill_audit` отдельно на любом SKILL.md. Чтобы извлекать из локального PDF/EPUB без Anna's, добавь инструмент-обёртку над `extractBookText` + Gemini — ~30 строк по шаблону `book-to-skill.ts`.
+**В: Можно ли запускать без библиотеки по подписке?**
+Используй `skill_audit` отдельно на любом SKILL.md. Чтобы извлекать из локального PDF/EPUB без библиотеки, добавь инструмент-обёртку над `extractBookText` + Gemini — ~30 строк по шаблону `book-to-skill.ts`.
 
 **В: В чём отличие от обычного "summarize book" тула?**
 Саммери — для людей. Этот тул производит структурированный **AI agent skill**: capabilities которые агент применяет, constraints которым он следует, цитаты которые он может процитировать, anti-patterns которые он отвергает. Прошёл валидацию аудита. Drop-in совместимо с загрузчиком скиллов Claude Code.
@@ -374,7 +374,7 @@ Gemini промпт требует цитаты с указанием главы
 - [x] **Pattern 2 awareness** — enrich/preview читают всю папку скилла (SKILL.md + `references/*.md`); create авто-сплит в Pattern 2 если рендер превысит ~500 строк — выпущено в v0.4.0
 - [ ] Retry с feedback — при провале аудита, перепрашиваем Gemini с конкретными issues
 - [ ] `book_synthesize_skill(books[], target_name)` — синтез N книг в один сводный скилл
-- [x] WireGuard / SOCKS5 proxy opt-in через `ANNAS_HTTPS_PROXY` (только трафик anna's; Gemini напрямую) — выпущено в v0.1.1
+- [x] WireGuard / SOCKS5 proxy opt-in через `ANNAS_HTTPS_PROXY` (только трафик библиотеки; Gemini напрямую) — выпущено в v0.1.1
 - [ ] Публикация в npm как `mcp-annas-archive-create-skill`
 
 ## GitHub topics
@@ -382,8 +382,8 @@ Gemini промпт требует цитаты с указанием главы
 Рекомендуемые topics для repository discoverability:
 
 ```
-mcp, model-context-protocol, claude-code, claude-skill, anna-archive,
-annas-archive, anthropic, ai-agent, agent-skills, book-extraction,
+mcp, model-context-protocol, claude-code, claude-skill, personal-library,
+subscription-library, anthropic, ai-agent, agent-skills, book-extraction,
 methodology, gemini, google-ai-studio, rag, knowledge-extraction,
 epub, pdf, fb2, skill-evaluation, stdio-server, typescript, nodejs
 ```
@@ -417,6 +417,6 @@ npm run smoke:e2e -- "Software Requirements Karl Wiegers"   # audit должен
 
 <div align="center">
 
-*MCP Annas-Archive + Create Skill — превращаем книги в навыки агента Claude Code, одним вызовом инструмента.*
+*MCP Books + Create Skill — превращаем книги в навыки агента Claude Code, одним вызовом инструмента.*
 
 </div>

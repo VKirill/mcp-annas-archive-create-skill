@@ -191,7 +191,7 @@ export async function searchBooks(
     .map((h) => h.format);
   if (excluded.length > 0) {
     const unique = [...new Set(excluded)].join(", ");
-    process.stderr.write(`[annas] filtered ${excluded.length} hits (excluded: ${unique})\n`);
+    process.stderr.write(`[books] filtered ${excluded.length} hits (excluded: ${unique})\n`);
   }
 
   const filtered = hits.filter((h) => FORMAT_WHITELIST.has(h.format));
@@ -207,7 +207,7 @@ export function loadConfigFromEnv(): AnnasConfig {
   const baseUrl = process.env.ANNAS_BASE_URL ?? "https://annas-archive.gl";
   const accountKey = process.env.ANNAS_ACCOUNT_KEY ?? "";
   if (!accountKey) {
-    throw new Error("ANNAS_ACCOUNT_KEY not set in env (member account key from annas-archive.gl)");
+    throw new Error("ANNAS_ACCOUNT_KEY not set in env (subscription library access key)");
   }
   return { baseUrl, accountKey };
 }
